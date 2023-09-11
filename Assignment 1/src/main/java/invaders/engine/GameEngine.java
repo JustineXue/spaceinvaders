@@ -21,8 +21,12 @@ public class GameEngine {
 	private boolean left;
 	private boolean right;
 
+	private Parser parser;
+
 	public GameEngine(String config){
 		// read the config here
+		this.parser = new Parser(config);
+		this.parser.parse();
 		gameobjects = new ArrayList<GameObject>();
 		renderables = new ArrayList<Renderable>();
 
@@ -96,4 +100,5 @@ public class GameEngine {
 			player.right();
 		}
 	}
+
 }
