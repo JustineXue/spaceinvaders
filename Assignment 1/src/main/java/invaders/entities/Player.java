@@ -21,7 +21,7 @@ public class Player implements Moveable, Damagable, Renderable {
     private final Image image;
 
     public Player(Vector2D position){
-        this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), width, height, true, true);
+        this.image = new Image(new File("src/main/resources/playerred.png").toURI().toString(), width, height, true, true);
         this.position = position;
     }
 
