@@ -1,6 +1,6 @@
 package invaders.rendering;
 
-import invaders.GameObject;
+import invaders.entities.GameObject;
 import invaders.physics.Vector2D;
 import invaders.engine.GameEngine;
 import javafx.scene.Node;

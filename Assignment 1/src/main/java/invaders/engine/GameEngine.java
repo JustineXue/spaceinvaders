@@ -3,8 +3,8 @@ package invaders.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import invaders.GameObject;
-import invaders.entities.Player;
+import invaders.entities.GameObject;
+import invaders.entities.concrete.Player;
 import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
@@ -23,12 +23,19 @@ public class GameEngine {
 
 	private Parser parser;
 
+	private int gameSizeX;
+
+	private int gameSizeY;
+
 	public GameEngine(String config){
 		// read the config here
-		this.parser = new Parser(config);
-		this.parser.parse();
 		gameobjects = new ArrayList<GameObject>();
 		renderables = new ArrayList<Renderable>();
+
+		parser = new Parser(config);
+		parser.parse();
+		this.gameSizeX = parser.getGameSizeX();
+		this.gameSizeY = parser.getGameSizeY();
 
 		player = new Player(new Vector2D(200, 380));
 		renderables.add(player);
@@ -99,6 +106,14 @@ public class GameEngine {
 		if(right){
 			player.right();
 		}
+	}
+
+	public int getGameSizeX(){
+		return this.gameSizeX;
+	}
+
+	public int getGameSizeY(){
+		return this.gameSizeY;
 	}
 
 }

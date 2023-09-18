@@ -13,6 +13,9 @@ public class Parser{
 
     private String config;
 
+    private int gameSizeX;
+    private int gameSizeY;
+
     public Parser(String config){
         this.config = config;
     }
@@ -31,8 +34,8 @@ public class Parser{
             // Access nested elements
             JSONObject gameObject = (JSONObject) jsonObject.get("Game");
             JSONObject sizeObject = (JSONObject) gameObject.get("size");
-            int gameSizeX = Math.toIntExact((Long) sizeObject.get("x"));
-            int gameSizeY = Math.toIntExact((Long) sizeObject.get("y"));
+            this.gameSizeX = Math.toIntExact((Long) sizeObject.get("x"));
+            this.gameSizeY = Math.toIntExact((Long) sizeObject.get("y"));
 
             JSONObject playerObject = (JSONObject) jsonObject.get("Player");
             String playerColor = (String) playerObject.get("colour");
@@ -85,6 +88,14 @@ public class Parser{
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getGameSizeX(){
+        return this.gameSizeX;
+    }
+
+    public int getGameSizeY(){
+        return this.gameSizeY;
     }
 
 }
