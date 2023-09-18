@@ -18,16 +18,29 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     private final Vector2D position;
     private final Animator anim = null;
-    private double health = 100;
+    private double health;
 
     private final double width = 25;
     private final double height = 30;
     private final Image image;
 
-    private ProjectileManager projectileManager;
+    private int speed;
 
-    public Player(Vector2D position){
-        this.image = new Image(new File("src/main/resources/playerred.png").toURI().toString(), width, height, true, true);
+    private int lives;
+
+    private ProjectileManager projectileManager;
+    public Player(Vector2D position, String playerColour, int playerSpeed, int playerLives){
+        this.speed = playerSpeed;
+        this.health = playerLives;
+        if (playerColour.equals("blue")){
+            this.image = new Image(new File("src/main/resources/playerblue.png").toURI().toString(), width, height, true, true);
+        } else if (playerColour.equals("green")){
+            this.image = new Image(new File("src/main/resources/playergreen.png").toURI().toString(), width, height, true, true);
+        } else if (playerColour.equals("red")){
+            this.image = new Image(new File("src/main/resources/playerred.png").toURI().toString(), width, height, true, true);
+        } else {
+            this.image = new Image(new File("src/main/resources/playerred.png").toURI().toString(), width, height, true, true);
+        }
         this.position = position;
         ProjectileFactory projectileFactory = new ShipProjectileCreator();
         this.projectileManager = new ProjectileManager(projectileFactory);
@@ -45,7 +58,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     @Override
     public boolean isAlive() {
-        return this.health > 0;
+        return this.lives > 0;
     }
 
     @Override
@@ -60,12 +73,12 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     @Override
     public void left() {
-        this.position.setX(this.position.getX() - 1);
+        this.position.setX(this.position.getX() - this.speed);
     }
 
     @Override
     public void right() {
-        this.position.setX(this.position.getX() + 1);
+        this.position.setX(this.position.getX() + this.speed);
     }
 
     public void shoot(){
@@ -101,5 +114,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     public void start(){}
     @Override
     public void update(){}
+
+    public int getSpeed(){ return this.speed; }
 
 }

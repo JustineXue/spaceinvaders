@@ -16,6 +16,12 @@ public class Parser{
     private int gameSizeX;
     private int gameSizeY;
 
+    private String playerColour;
+    private int playerSpeed;
+    private int playerLives;
+    private int playerPosX;
+    private int playerPosY;
+
     public Parser(String config){
         this.config = config;
     }
@@ -38,16 +44,16 @@ public class Parser{
             this.gameSizeY = Math.toIntExact((Long) sizeObject.get("y"));
 
             JSONObject playerObject = (JSONObject) jsonObject.get("Player");
-            String playerColor = (String) playerObject.get("colour");
-            int playerSpeed = Math.toIntExact((Long) playerObject.get("speed"));
-            int playerLives = Math.toIntExact((Long) playerObject.get("lives"));
+            this.playerColour = (String) playerObject.get("colour");
+            this.playerSpeed = Math.toIntExact((Long) playerObject.get("speed"));
+            this.playerLives = Math.toIntExact((Long) playerObject.get("lives"));
             JSONObject playerPosition = (JSONObject) playerObject.get("position");
-            int playerPosX = Math.toIntExact((Long) playerPosition.get("x"));
-            int playerPosY = Math.toIntExact((Long) playerPosition.get("y"));
+            this.playerPosX = Math.toIntExact((Long) playerPosition.get("x"));
+            this.playerPosY = Math.toIntExact((Long) playerPosition.get("y"));
 
             System.out.println("Game Size X: " + gameSizeX);
             System.out.println("Game Size Y: " + gameSizeY);
-            System.out.println("Player Color: " + playerColor);
+            System.out.println("Player Colour: " + playerColour);
             System.out.println("Player Speed: " + playerSpeed);
             System.out.println("Player Lives: " + playerLives);
             System.out.println("Player Position X: " + playerPosX);
@@ -97,5 +103,15 @@ public class Parser{
     public int getGameSizeY(){
         return this.gameSizeY;
     }
+
+    public String getPlayerColour(){return this.playerColour;}
+
+    public int getPlayerSpeed(){return this.playerSpeed;}
+
+    public int getPlayerLives(){ return this.playerLives; }
+
+    public int getPlayerPosX(){ return this.playerPosX; }
+
+    public int getPlayerPosY(){ return this.playerPosY; }
 
 }

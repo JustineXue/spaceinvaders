@@ -27,6 +27,12 @@ public class GameEngine {
 
 	private int gameSizeY;
 
+	private String playerColour;
+	private int playerSpeed;
+	private int playerLives;
+	private int playerPosX;
+	private int playerPosY;
+
 	public GameEngine(String config){
 		// read the config here
 		gameobjects = new ArrayList<GameObject>();
@@ -36,8 +42,13 @@ public class GameEngine {
 		parser.parse();
 		this.gameSizeX = parser.getGameSizeX();
 		this.gameSizeY = parser.getGameSizeY();
+		this.playerColour = parser.getPlayerColour();
+		this.playerSpeed = parser.getPlayerSpeed();
+		this.playerLives = parser.getPlayerLives();
+		this.playerPosX = parser.getPlayerPosX();
+		this.playerPosY = parser.getPlayerPosY();
 
-		player = new Player(new Vector2D(200, 380));
+		player = new Player(new Vector2D(playerPosX, playerPosY), playerColour, playerSpeed, playerLives);
 		renderables.add(player);
 	}
 
@@ -55,16 +66,16 @@ public class GameEngine {
 			if(!ro.getLayer().equals(Renderable.Layer.FOREGROUND)){
 				continue;
 			}
-			if(ro.getPosition().getX() + ro.getWidth() >= 640) {
-				ro.getPosition().setX(639-ro.getWidth());
+			if(ro.getPosition().getX() + ro.getWidth() >= gameSizeX) {
+				ro.getPosition().setX(gameSizeX - 1 -ro.getWidth());
 			}
 
 			if(ro.getPosition().getX() <= 0) {
 				ro.getPosition().setX(1);
 			}
 
-			if(ro.getPosition().getY() + ro.getHeight() >= 400) {
-				ro.getPosition().setY(399-ro.getHeight());
+			if(ro.getPosition().getY() + ro.getHeight() >= gameSizeY) {
+				ro.getPosition().setY(gameSizeY - 1 - ro.getHeight());
 			}
 
 			if(ro.getPosition().getY() <= 0) {

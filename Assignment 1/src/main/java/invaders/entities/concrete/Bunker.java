@@ -19,7 +19,7 @@ public class Bunker implements Renderable, Damagable, GameObject{
     private final Vector2D position;
     private final Animator anim = null;
 
-    private double health = 150;
+    private double health = 3;
 
     private BunkerState state;
 
