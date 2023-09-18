@@ -82,7 +82,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     }
 
     public void shoot(){
-       this.projectileManager.addProjectile(this.position);
+        this.projectileManager.addProjectile(this.position);
     }
 
     @Override

@@ -72,6 +72,8 @@ public class ShipProjectile implements Projectile, Renderable, GameObject{
     @Override
     public void start(){}
     @Override
-    public void update(){}
+    public void update(){
+        this.position.setY(this.position.getY() - this.yVel);
+    }
 
 }
