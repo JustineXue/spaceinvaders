@@ -8,6 +8,8 @@ import invaders.entities.concrete.Player;
 import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
+import invaders.entities.concrete.Bunker;
+import invaders.entities.concrete.Alien;
 
 /**
  * This class manages the main loop and logic of the game
@@ -33,6 +35,9 @@ public class GameEngine {
 	private int playerPosX;
 	private int playerPosY;
 
+	private List<Bunker> bunkers = new ArrayList<Bunker>();
+	private List<Alien> aliens = new ArrayList<Alien>();
+
 	public GameEngine(String config){
 		// read the config here
 		gameobjects = new ArrayList<GameObject>();
@@ -48,8 +53,27 @@ public class GameEngine {
 		this.playerPosX = parser.getPlayerPosX();
 		this.playerPosY = parser.getPlayerPosY();
 
+		List<GameObject> tempBunkers = parser.getBunkers();
+		List<GameObject> tempAliens = parser.getAliens();
+
 		player = new Player(new Vector2D(playerPosX, playerPosY), playerColour, playerSpeed, playerLives);
 		renderables.add(player);
+		gameobjects.add(player);
+
+		for (GameObject go: tempBunkers){
+			if (go instanceof Bunker) {
+				bunkers.add((Bunker) go);
+			}
+		}
+		renderables.addAll(bunkers);
+		gameobjects.addAll(bunkers);
+		for (GameObject go: tempAliens){
+			if (go instanceof Alien) {
+				aliens.add((Alien) go);
+			}
+		}
+		renderables.addAll(aliens);
+		gameobjects.addAll(aliens);
 	}
 
 	/**

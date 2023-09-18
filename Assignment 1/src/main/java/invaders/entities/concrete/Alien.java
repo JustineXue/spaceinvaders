@@ -24,10 +24,13 @@ public class Alien implements Moveable, Renderable, GameObject {
     private final double height = 30;
     private final Image image;
 
+    private double xVel = 1;
+    private double yVel = 1;
+
     private ProjectileManager projectileManager;
 
     public Alien(Vector2D position, String strategy){
-        this.image = new Image(new File("src/main/resources/enemy.png").toURI().toString(), width, height, true, true);
+        this.image = new Image(new File("src/main/resources/alien.png").toURI().toString(), width, height, true, true);
         this.position = position;
         AlienProjectileCreator projectileCreator = new AlienProjectileCreator(strategy);
         this.projectileManager = new ProjectileManager(projectileCreator);
@@ -43,12 +46,12 @@ public class Alien implements Moveable, Renderable, GameObject {
 
     @Override
     public void up() {
-        return;
+        this.position.setY(this.position.getY() - 1);
     }
 
     @Override
     public void down() {
-        return;
+        this.position.setY(this.position.getY() + 1);
     }
 
     @Override

@@ -5,6 +5,6 @@ import invaders.physics.Vector2D;
 
 public interface GameObjectBuilder{
 
-    public GameObject buildPart(double height, double width, Vector2D position, String strategy);
+    public GameObject buildPart(int height, int width, Vector2D position, String strategy);
 
 }

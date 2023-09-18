@@ -9,6 +9,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import invaders.entities.GameObject;
+import invaders.entities.concrete.Bunker;
+import invaders.entities.concrete.Alien;
+import invaders.entities.builder.GameObjectBuilder;
+import invaders.entities.builder.BunkerBuilder;
+import invaders.entities.builder.AlienBuilder;
+import invaders.physics.Vector2D;
+
 public class Parser{
 
     private String config;
@@ -21,6 +32,14 @@ public class Parser{
     private int playerLives;
     private int playerPosX;
     private int playerPosY;
+
+    private List<GameObject> bunkers = new ArrayList<GameObject>();
+
+    private List<GameObject> aliens = new ArrayList<GameObject>();
+
+    private GameObjectBuilder bunkerBuilder = new BunkerBuilder();
+
+    private GameObjectBuilder alienBuilder = new AlienBuilder();
 
     public Parser(String config){
         this.config = config;
@@ -70,6 +89,10 @@ public class Parser{
                 int bunkerSizeX = Math.toIntExact((Long) bunkerSize.get("x"));
                 int bunkerSizeY = Math.toIntExact((Long) bunkerSize.get("y"));
 
+                bunkers.add(bunkerBuilder.buildPart(
+                        bunkerSizeY, bunkerSizeX, new Vector2D(bunkerPosX, bunkerPosY), ""
+                ));
+
                 System.out.println("Bunker Position X: " + bunkerPosX);
                 System.out.println("Bunker Position Y: " + bunkerPosY);
                 System.out.println("Bunker Size X: " + bunkerSizeX);
@@ -83,6 +106,10 @@ public class Parser{
                 int enemyPosX = Math.toIntExact((Long) enemyPosition.get("x"));
                 int enemyPosY = Math.toIntExact((Long) enemyPosition.get("y"));
                 String enemyProjectile = (String) enemy.get("projectile");
+
+                aliens.add(alienBuilder.buildPart(
+                        0, 0, new Vector2D(enemyPosX, enemyPosY), enemyProjectile
+                ));
 
                 System.out.println("Enemy Position X: " + enemyPosX);
                 System.out.println("Enemy Position Y: " + enemyPosY);
@@ -113,5 +140,9 @@ public class Parser{
     public int getPlayerPosX(){ return this.playerPosX; }
 
     public int getPlayerPosY(){ return this.playerPosY; }
+
+    public List<GameObject> getBunkers(){ return this.bunkers; }
+
+    public List<GameObject> getAliens(){ return this.aliens; }
 
 }
