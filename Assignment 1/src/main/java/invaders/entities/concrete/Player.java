@@ -5,14 +5,13 @@ import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Animator;
 import invaders.rendering.Renderable;
-import invaders.entities.projectile.ProjectileManager;
-import invaders.entities.projectile.ProjectileFactory;
-import invaders.entities.projectile.ShipProjectileCreator;
 import invaders.entities.GameObject;
 
 import javafx.scene.image.Image;
 
 import java.io.File;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Player implements Moveable, Damagable, Renderable, GameObject {
 
@@ -27,8 +26,6 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     private int speed;
 
     private int lives;
-
-    private ProjectileManager projectileManager;
     public Player(Vector2D position, String playerColour, int playerSpeed, int playerLives){
         this.speed = playerSpeed;
         this.health = playerLives;
@@ -42,8 +39,6 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
             this.image = new Image(new File("src/main/resources/playerred.png").toURI().toString(), width, height, true, true);
         }
         this.position = position;
-        ProjectileFactory projectileFactory = new ShipProjectileCreator();
-        this.projectileManager = new ProjectileManager(projectileFactory);
     }
 
     @Override
@@ -82,7 +77,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     }
 
     public void shoot(){
-        this.projectileManager.addProjectile(this.position);
+        System.out.println("Player shoot!");
     }
 
     @Override

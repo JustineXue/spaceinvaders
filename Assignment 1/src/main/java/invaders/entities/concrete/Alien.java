@@ -4,13 +4,12 @@ import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Animator;
 import invaders.rendering.Renderable;
-import invaders.entities.projectile.ProjectileManager;
-import invaders.entities.projectile.AlienProjectileCreator;
 import invaders.entities.GameObject;
 
 import javafx.scene.image.Image;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import java.io.File;
 
@@ -34,17 +33,21 @@ public class Alien implements Moveable, Renderable, GameObject {
     private double xVel = 20;
     private double yVel = 20;
 
-    private ProjectileManager projectileManager;
-
     private Direction direction;
 
     private int moveCounter = 720;
 
+    private int coolDown = 720;
+
+    private boolean coolingDown = false;
+
+    private Random random = new Random();
+
+    private int randomInterval;
+
     public Alien(Vector2D position, String strategy){
         this.image = new Image(new File("src/main/resources/alien.png").toURI().toString(), width, height, true, true);
         this.position = position;
-        AlienProjectileCreator projectileCreator = new AlienProjectileCreator(strategy);
-        this.projectileManager = new ProjectileManager(projectileCreator);
     }
 
     public void kill() {
@@ -76,7 +79,7 @@ public class Alien implements Moveable, Renderable, GameObject {
     }
 
     public void shoot(){
-        this.projectileManager.addProjectile(this.position);
+        System.out.println("Alien Shoot!");
     }
 
     @Override
@@ -116,10 +119,28 @@ public class Alien implements Moveable, Renderable, GameObject {
         }
     }
 
+    public int generateRandom(){
+        int randomNumber = random.nextInt(2001);
+        return randomNumber;
+        //generates a random number between 0 and 2000
+    }
+
     @Override
     public void start(){}
     @Override
     public void update(){
+        if (coolingDown == true){
+            coolDown--;
+            if (coolDown == 0){
+                coolingDown = false;
+                coolDown = 720;
+            }
+        } else {
+            randomInterval = generateRandom();
+            if (randomInterval == 0){
+                this.shoot();
+            }
+        }
         if (moveCounter % 120 == 0){
             if (this.moveCounter == 120){
                 this.direction = direction.LEFT;

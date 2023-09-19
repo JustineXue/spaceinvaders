@@ -10,7 +10,6 @@ import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 import invaders.entities.concrete.Bunker;
 import invaders.entities.concrete.Alien;
-
 /**
  * This class manages the main loop and logic of the game
  */
@@ -129,7 +128,7 @@ public class GameEngine {
 	}
 
 	public boolean shootPressed(){
-		player.shoot();
+//		player.shoot();
 		return true;
 	}
 
