@@ -14,6 +14,9 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
+import invaders.logic.Damagable;
+import invaders.entities.concrete.Player;
+
 public class GameWindow {
 	private final int width;
     private final int height;
@@ -53,9 +56,15 @@ public class GameWindow {
 
     private void draw(){
         model.update();
-
+        List<Renderable> markedForDelete = new ArrayList<Renderable>();
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {
+            if ((entity instanceof Damagable)){
+                Damagable d = (Damagable) entity;
+                if (!d.isAlive()){
+                    markedForDelete.add(entity);
+                }
+            }
             boolean notFound = true;
             for (EntityView view : entityViews) {
                 if (view.matchesEntity(entity)) {
@@ -72,6 +81,11 @@ public class GameWindow {
         }
 
         for (EntityView entityView : entityViews) {
+            for (Renderable r: markedForDelete){
+                if (entityView.matchesEntity(r)){
+                    entityView.markForDelete();
+                }
+            }
             if (entityView.isMarkedForDelete()) {
                 pane.getChildren().remove(entityView.getNode());
             }

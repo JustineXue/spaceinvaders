@@ -90,8 +90,6 @@ public class Bunker implements Renderable, Damagable, GameObject{
             this.state = new YellowBunker(height, width);
         } else if (this.state.getColour().equals("yellow")){
             this.state = new RedBunker(height, width);
-        } else if (this.state.getColour().equals("red")){
-            this.state = null;
         }
     }
 

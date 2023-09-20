@@ -16,10 +16,26 @@ public class AlienProjectile implements Projectile {
     private final Image image;
     private double yVel = 2;
 
+    private double health = 1;
+
     public AlienProjectile(Vector2D position, double yVel){
         this.image = new Image(new File("src/main/resources/alienprojectile.png").toURI().toString(), width, height, true, true);
         this.position = position;
         this.yVel = yVel;
+    }
+
+    @Override
+    public void takeDamage(double amount){
+        this.health -= amount;
+    }
+
+    @Override
+    public double getHealth(){
+        return this.health;
+    }
+    @Override
+    public boolean isAlive(){
+        return this.health > 0;
     }
 
     @Override

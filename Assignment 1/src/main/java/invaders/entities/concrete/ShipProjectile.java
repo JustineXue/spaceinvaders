@@ -16,9 +16,25 @@ public class ShipProjectile implements Projectile {
     private final Image image;
     private double yVel = 2;
 
+    private double health = 1;
+
     public ShipProjectile(Vector2D position){
         this.image = new Image(new File("src/main/resources/shipprojectile.png").toURI().toString(), width, height, true, true);
         this.position = position;
+    }
+
+    @Override
+    public void takeDamage(double amount){
+        this.health -= amount;
+    }
+
+    @Override
+    public double getHealth(){
+        return this.health;
+    }
+    @Override
+    public boolean isAlive(){
+        return this.health > 0;
     }
 
     @Override

@@ -5,6 +5,7 @@ import invaders.physics.Vector2D;
 import invaders.rendering.Animator;
 import invaders.rendering.Renderable;
 import invaders.entities.GameObject;
+import invaders.logic.Damagable;
 
 import invaders.entities.projectile.ProjectileStrategy;
 
@@ -22,7 +23,7 @@ enum Direction{
     RIGHT
 }
 
-public class Alien implements Moveable, Renderable, GameObject {
+public class Alien implements Moveable, Damagable, Renderable, GameObject {
 
     private Vector2D position;
     private final Animator anim = null;
@@ -34,6 +35,8 @@ public class Alien implements Moveable, Renderable, GameObject {
 
     private double xVel = 20;
     private double yVel = 20;
+
+    private double health = 1;
 
     private Direction direction;
 
@@ -63,12 +66,18 @@ public class Alien implements Moveable, Renderable, GameObject {
         this.strategy = strategy;
     }
 
-    public void kill() {
-        this.alive = false;
+    @Override
+    public void takeDamage(double amount){
+        this.health -= amount;
     }
 
-    public boolean getIsAlive() {
-        return this.alive;
+    @Override
+    public double getHealth(){
+        return this.health;
+    }
+    @Override
+    public boolean isAlive(){
+        return this.health > 0;
     }
 
     @Override

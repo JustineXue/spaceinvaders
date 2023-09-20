@@ -17,7 +17,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     private final Vector2D position;
     private final Animator anim = null;
-    private double health;
+    private double health = 3;
 
     private final double width = 25;
     private final double height = 30;
