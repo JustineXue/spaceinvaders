@@ -70,14 +70,6 @@ public class Parser{
             this.playerPosX = Math.toIntExact((Long) playerPosition.get("x"));
             this.playerPosY = Math.toIntExact((Long) playerPosition.get("y"));
 
-            System.out.println("Game Size X: " + gameSizeX);
-            System.out.println("Game Size Y: " + gameSizeY);
-            System.out.println("Player Colour: " + playerColour);
-            System.out.println("Player Speed: " + playerSpeed);
-            System.out.println("Player Lives: " + playerLives);
-            System.out.println("Player Position X: " + playerPosX);
-            System.out.println("Player Position Y: " + playerPosY);
-
             // Access Bunkers and Enemies arrays
             JSONArray bunkersArray = (JSONArray) jsonObject.get("Bunkers");
             for (Object bunkerObj : bunkersArray) {
@@ -94,11 +86,6 @@ public class Parser{
                 bunkerBuilder.buildDimensions(bunkerSizeY, bunkerSizeX);
                 Bunker newBunker = (Bunker) bunkerBuilder.getProduct();
                 bunkers.add(newBunker);
-
-                System.out.println("Bunker Position X: " + bunkerPosX);
-                System.out.println("Bunker Position Y: " + bunkerPosY);
-                System.out.println("Bunker Size X: " + bunkerSizeX);
-                System.out.println("Bunker Size Y: " + bunkerSizeY);
             }
 
             JSONArray enemiesArray = (JSONArray) jsonObject.get("Enemies");
@@ -114,10 +101,6 @@ public class Parser{
                 alienBuilder.buildStrategy(enemyProjectile);
                 Alien newAlien = (Alien) alienBuilder.getProduct();
                 aliens.add(newAlien);
-
-                System.out.println("Enemy Position X: " + enemyPosX);
-                System.out.println("Enemy Position Y: " + enemyPosY);
-                System.out.println("Enemy Projectile: " + enemyProjectile);
             }
 
         } catch (FileNotFoundException e) {

@@ -23,26 +23,6 @@ public class AlienProjectile implements Projectile {
     }
 
     @Override
-    public void up() {
-        this.position.setY(this.position.getY() - this.yVel);
-    }
-
-    @Override
-    public void down() {
-        return;
-    }
-
-    @Override
-    public void left() {
-        return;
-    }
-
-    @Override
-    public void right() {
-        return;
-    }
-
-    @Override
     public Image getImage() {
         return this.image;
     }
@@ -71,7 +51,7 @@ public class AlienProjectile implements Projectile {
     public void start(){}
     @Override
     public void update(){
-        this.up();
+        this.position.setY(this.position.getY() + this.yVel);
     }
 
     public double getyVel(){ return this.yVel; }

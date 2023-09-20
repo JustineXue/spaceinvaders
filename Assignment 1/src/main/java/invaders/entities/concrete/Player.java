@@ -26,6 +26,8 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     private int speed;
 
     private int lives;
+
+    private boolean shoot = false;
     public Player(Vector2D position, String playerColour, int playerSpeed, int playerLives){
         this.speed = playerSpeed;
         this.health = playerLives;
@@ -78,6 +80,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     public void shoot(){
         System.out.println("Player shoot!");
+        this.shoot = true;
     }
 
     @Override
@@ -111,5 +114,9 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     public void update(){}
 
     public int getSpeed(){ return this.speed; }
+
+    public boolean getShoot(){ return this.shoot; }
+
+    public void setShoot(){ this.shoot = false; }
 
 }

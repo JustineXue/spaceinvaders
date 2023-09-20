@@ -10,6 +10,13 @@ import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 import invaders.entities.concrete.Bunker;
 import invaders.entities.concrete.Alien;
+import invaders.entities.concrete.ShipProjectile;
+import invaders.entities.concrete.AlienProjectile;
+import invaders.entities.projectile.Projectile;
+import invaders.entities.projectile.ProjectileCreator;
+import invaders.entities.projectile.AlienProjectileCreator;
+import invaders.entities.projectile.ShipProjectileCreator;
+import invaders.engine.CollisionDetector;
 /**
  * This class manages the main loop and logic of the game
  */
@@ -36,6 +43,16 @@ public class GameEngine {
 
 	private List<Bunker> bunkers = new ArrayList<Bunker>();
 	private List<Alien> aliens = new ArrayList<Alien>();
+
+	private List<Projectile> shipProjectiles = new ArrayList<Projectile>();
+
+	private List<Projectile> alienProjectiles = new ArrayList<Projectile>();
+
+	private ProjectileCreator alienProjectileCreator = new AlienProjectileCreator();
+
+	private ProjectileCreator shipProjectileCreator = new ShipProjectileCreator();
+
+	private CollisionDetector collisionDetector = new CollisionDetector();
 
 	public GameEngine(String config){
 		// read the config here
@@ -81,28 +98,48 @@ public class GameEngine {
 	public void update(){
 		movePlayer();
 		for(GameObject go: gameobjects){
+			if (go instanceof Alien){
+				Alien alien = (Alien) go;
+				if (alien.getShoot()){
+					alien.setShoot();
+					Projectile newProjectile = alienProjectileCreator.createProjectile(go);
+					alienProjectiles.add(newProjectile);
+					gameobjects.add(newProjectile);
+					renderables.add(newProjectile);
+				}
+			} else if (go instanceof Player){
+				if (player.getShoot()){
+					player.setShoot();
+					Projectile newProjectile = shipProjectileCreator.createProjectile(go);
+					shipProjectiles.add(newProjectile);
+					gameobjects.add(newProjectile);
+					renderables.add(newProjectile);
+				}
+			}
 			go.update();
 		}
 
 		// ensure that renderable foreground objects don't go off-screen
 		for(Renderable ro: renderables){
-			if(!ro.getLayer().equals(Renderable.Layer.FOREGROUND)){
-				continue;
-			}
-			if(ro.getPosition().getX() + ro.getWidth() >= gameSizeX) {
-				ro.getPosition().setX(gameSizeX - 1 -ro.getWidth());
-			}
+			if (!(ro instanceof Projectile)){
+				if(!ro.getLayer().equals(Renderable.Layer.FOREGROUND)){
+					continue;
+				}
+				if(ro.getPosition().getX() + ro.getWidth() >= gameSizeX) {
+					ro.getPosition().setX(gameSizeX - 1 -ro.getWidth());
+				}
 
-			if(ro.getPosition().getX() <= 0) {
-				ro.getPosition().setX(1);
-			}
+				if(ro.getPosition().getX() <= 0) {
+					ro.getPosition().setX(1);
+				}
 
-			if(ro.getPosition().getY() + ro.getHeight() >= gameSizeY) {
-				ro.getPosition().setY(gameSizeY - 1 - ro.getHeight());
-			}
+				if(ro.getPosition().getY() + ro.getHeight() >= gameSizeY) {
+					ro.getPosition().setY(gameSizeY - 1 - ro.getHeight());
+				}
 
-			if(ro.getPosition().getY() <= 0) {
-				ro.getPosition().setY(1);
+				if(ro.getPosition().getY() <= 0) {
+					ro.getPosition().setY(1);
+				}
 			}
 		}
 	}
