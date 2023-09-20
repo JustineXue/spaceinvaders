@@ -19,6 +19,11 @@ import invaders.entities.concrete.Player;
 import invaders.entities.concrete.GameOver;
 import invaders.entities.concrete.Success;
 import invaders.physics.Vector2D;
+import invaders.entities.GameObject;
+
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
 
 public class GameWindow {
 	private final int width;
@@ -42,6 +47,11 @@ public class GameWindow {
     private Success success;
 
     private boolean gameOverDisplayed = false;
+    private String scoreString;
+
+    private Text timeText;
+
+    private Text livesText;
 
     public GameWindow(GameEngine model, int width, int height){
 		this.width = width;
@@ -59,14 +69,6 @@ public class GameWindow {
         entityViews = new ArrayList<EntityView>();
 
         startTime = System.currentTimeMillis();
-
-        double displayX = this.width/2 - 50;
-        double displayY = this.height/2;
-
-        Vector2D displayPosition = new Vector2D(displayX, displayY);
-        success = new Success(displayPosition);
-        gameover = new GameOver(displayPosition);
-
     }
 
 	public void run() {
@@ -77,75 +79,63 @@ public class GameWindow {
     }
 
     private void draw(){
-        if (getElapsedTime() > 5 && gameStarted == false){
-            System.out.println("Game started!");
-            gameStarted = true;
-        }
-        if (gameStarted && model.isGameOver() && gameOverDisplayed == false) {
-            System.out.println("Game over!");
-            if (model.hasPlayerWon()) {
-                System.out.println("Player won!");
-                this.model.getRenderables().add(success);
-            } else {
-                System.out.println("Player lost");
-                this.model.getRenderables().add(gameover);
-            }
-            gameOverDisplayed = true;
-        }
-        model.update();
         List<Renderable> markedForDelete = new ArrayList<Renderable>();
         List<Renderable> renderables = model.getRenderables();
-        for (Renderable entity : renderables) {
-            if ((entity instanceof Damagable) && !(entity instanceof Player)) {
-                Damagable d = (Damagable) entity;
-                if (!d.isAlive()) {
-                    markedForDelete.add(entity);
+        List<GameObject> gameobjects = model.getGameObjects();
+        if (!gameOverDisplayed) {
+            if (getElapsedTime() > 5 && gameStarted == false) {
+                gameStarted = true;
+            }
+            if (gameStarted && model.isGameOver()) {
+                gameOverDisplayed = true;
+            }
+            model.update();
+            for (Renderable entity : renderables) {
+                if ((entity instanceof Damagable) && !(entity instanceof Player)) {
+                    Damagable d = (Damagable) entity;
+                    if (!d.isAlive()) {
+                        markedForDelete.add(entity);
+                    }
+                }
+                boolean notFound = true;
+                for (EntityView view : entityViews) {
+                    if (view.matchesEntity(entity)) {
+                        notFound = false;
+                        view.update(xViewportOffset, yViewportOffset);
+                        break;
+                    }
+                }
+                if (notFound) {
+                    EntityView entityView = new EntityViewImpl(entity);
+                    entityViews.add(entityView);
+                    pane.getChildren().add(entityView.getNode());
                 }
             }
-            boolean notFound = true;
-            for (EntityView view : entityViews) {
-                if (view.matchesEntity(entity)) {
-                    notFound = false;
-                    view.update(xViewportOffset, yViewportOffset);
-                    break;
-                }
-            }
-            if (notFound) {
-                EntityView entityView = new EntityViewImpl(entity);
-                entityViews.add(entityView);
-                pane.getChildren().add(entityView.getNode());
-            }
-        }
 
-        for (EntityView entityView : entityViews) {
-            for (Renderable r : markedForDelete) {
-                if (entityView.matchesEntity(r)) {
-                    entityView.markForDelete();
+            for (EntityView entityView : entityViews) {
+                for (Renderable r : markedForDelete) {
+                    if (entityView.matchesEntity(r)) {
+                        entityView.markForDelete();
+                    }
+                }
+                if (entityView.isMarkedForDelete()) {
+                    pane.getChildren().remove(entityView.getNode());
                 }
             }
-            if (entityView.isMarkedForDelete()) {
-                pane.getChildren().remove(entityView.getNode());
-            }
-        }
-        entityViews.removeIf(EntityView::isMarkedForDelete);
+            entityViews.removeIf(EntityView::isMarkedForDelete);
 
+            displayLives();
+            displayTime();
+        } else {
+            gameOver();
+        }
     }
 
 	public Scene getScene() {
         return scene;
     }
 
-    public void removeAllEntities(){
-        for (EntityView entityView : entityViews) {
-            entityView.markForDelete();
-            if (entityView.isMarkedForDelete()) {
-                pane.getChildren().remove(entityView.getNode());
-            }
-        }
-        entityViews.removeIf(EntityView::isMarkedForDelete);
-    }
-
-    public void getElapsedTimeFormatted(){
+    public String getElapsedTimeFormatted(){
         long currentTime = System.currentTimeMillis();
         long elapsedTimeInMillis = currentTime - startTime;
 
@@ -153,7 +143,8 @@ public class GameWindow {
         long elapsedMinutes = elapsedTimeInMillis / (60 * 1000); // 60,000 milliseconds in a minute
         long elapsedSeconds = (elapsedTimeInMillis / 1000) % 60; // 1,000 milliseconds in a second
 
-        System.out.printf("Elapsed Time: %d minutes %d seconds%n", elapsedMinutes, elapsedSeconds);
+        String time = String.format("Time: %02d:%02d", elapsedMinutes, elapsedSeconds);
+        return time;
     }
 
     public long getElapsedTime(){
@@ -161,9 +152,61 @@ public class GameWindow {
         long elapsedTimeInMillis = currentTime - startTime;
 
 // Calculate elapsed minutes and seconds
-        long elapsedSeconds = (elapsedTimeInMillis / 1000) % 60; // 1,000 milliseconds in a second
+        long elapsedSeconds = (elapsedTimeInMillis / 1000);
 
         return elapsedSeconds;
+    }
+
+    public Text generateText(String content, int size, double xPos, double yPos){
+        Text newText = new Text(content);
+        newText.setFont(Font.font("Arial", size));
+        newText.setFill(Color.WHITE);
+        newText.setX(xPos);
+        newText.setY(yPos);
+        newText.setVisible(true);
+        return newText;
+    }
+
+    public String calculateScore(){
+        int aliensKilled = model.getAliensKilled();
+        int score = aliensKilled * 100;
+        String scoreText = String.format("Score: %d", score);
+        return scoreText;
+    }
+
+    public void gameOver(){
+        double displayX = this.width/2 - 100;
+        double displayY = this.height/2;
+        Text displayText;
+        Text scoreText;
+        scoreString = calculateScore();
+        if (model.hasPlayerWon()) {
+            displayText = generateText("YOU WIN!", 36, displayX, displayY);
+        } else {
+            displayText = generateText("GAME OVER", 36, displayX, displayY);
+        }
+        scoreText = generateText(scoreString, 24, displayX, displayY + 50);
+
+        pane.getChildren().add(displayText);
+        pane.getChildren().add(scoreText);
+    }
+
+    public void displayTime(){
+        pane.getChildren().remove(timeText);
+        double displayX = this.width - 120;
+        double displayY = 5;
+        String time = getElapsedTimeFormatted();
+        timeText = generateText(time, 18, displayX, displayY + 100);
+        pane.getChildren().add(timeText);
+    }
+
+    public void displayLives(){
+        pane.getChildren().remove(livesText);
+        double displayX = 20;
+        double displayY = 5 ;
+        String lives = String.format("Lives: %d", this.model.getPlayerLives());
+        livesText = generateText(lives, 18, displayX, displayY + 100);
+        pane.getChildren().add(livesText);
     }
 
 }

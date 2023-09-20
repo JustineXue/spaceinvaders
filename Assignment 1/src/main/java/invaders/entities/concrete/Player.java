@@ -79,7 +79,6 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
     }
 
     public void shoot(){
-        System.out.println("Player shoot!");
         this.shoot = true;
     }
 

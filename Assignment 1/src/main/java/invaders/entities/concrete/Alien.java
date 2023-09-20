@@ -104,7 +104,6 @@ public class Alien implements Moveable, Damagable, Renderable, GameObject {
 
     public void shoot(){
         this.shoot = true;
-        System.out.println("Alien Shoot!");
     }
 
     @Override

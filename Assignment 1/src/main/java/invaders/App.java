@@ -22,7 +22,6 @@ public class App extends Application {
 
         window.run();
 
-
         primaryStage.setTitle("Space Invaders");
         primaryStage.setScene(window.getScene());
         primaryStage.show();
