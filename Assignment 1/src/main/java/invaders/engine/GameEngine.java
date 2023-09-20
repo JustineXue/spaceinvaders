@@ -55,7 +55,17 @@ public class GameEngine {
 
 	private CollisionDetector collisionDetector = new CollisionDetector();
 
-	private boolean isGameLoaded = false;
+	private boolean hasPlayerWon;
+
+	private int alienProjectileCount = 0;
+
+	private int alienCount;
+
+	private int aliensKilled = 0;
+
+	private int bunkerCount;
+
+	private int bunkersRemoved = 0;
 
 	public GameEngine(String config){
 		// read the config here
@@ -93,6 +103,8 @@ public class GameEngine {
 		}
 		renderables.addAll(aliens);
 		gameobjects.addAll(aliens);
+		alienCount = aliens.size();
+		bunkerCount = bunkers.size();
 	}
 
 	/**
@@ -101,14 +113,18 @@ public class GameEngine {
 	public void update(){
 		movePlayer();
 		List<Projectile> tempProjectiles = new ArrayList<Projectile>();
+		List<Projectile> removeProjectiles = new ArrayList<Projectile>();
 		for(GameObject go: gameobjects){
 			if (go instanceof Alien){
 				Alien alien = (Alien) go;
 				if (alien.getShoot()){
+					if (alienProjectileCount < 3){
+						Projectile newProjectile = alienProjectileCreator.createProjectile(go);
+						alienProjectiles.add(newProjectile);
+						tempProjectiles.add(newProjectile);
+						alienProjectileCount += 1;
+					}
 					alien.setShoot();
-					Projectile newProjectile = alienProjectileCreator.createProjectile(go);
-					alienProjectiles.add(newProjectile);
-					tempProjectiles.add(newProjectile);
 				}
 			} else if (go instanceof Player){
 				if (player.getShoot()){
@@ -142,23 +158,24 @@ public class GameEngine {
 				if(ro.getPosition().getY() <= 0) {
 					ro.getPosition().setY(1);
 				}
+			} else {
+				if(ro.getPosition().getY() > gameSizeY) {
+					alienProjectileCount -= 1;
+					Projectile p = (Projectile) ro;
+					removeProjectiles.add(p);
+				} else if (ro.getPosition().getY() < 0){
+					Projectile p = (Projectile) ro;
+					removeProjectiles.add(p);
+				}
 			}
 		}
-
+//		gameobjects.removeAll(removeProjectiles);
+		renderables.removeAll(removeProjectiles);
+		alienProjectiles.remove(removeProjectiles);
 		gameobjects.addAll(tempProjectiles);
 		renderables.addAll(tempProjectiles);
 
 		checkCollision();
-		if (isGameLoaded) {
-//			if (isGameOver()) {
-//				if (hasPlayerWon()) {
-//					System.out.println("Congrats!");
-//				} else {
-//					System.out.println("Better luck next time");
-//				}
-//				removeAllObjects();
-//			}
-		}
 	}
 
 	public List<Renderable> getRenderables(){
@@ -212,6 +229,10 @@ public class GameEngine {
 				p.takeDamage(1);
 				player.takeDamage(1);
 				System.out.printf("Player shot! Health %f%n", player.getHealth());
+				if (!player.isAlive()){
+					System.out.println("Player is dead");
+				}
+				alienProjectileCount -= 1;
 			}
 			for (Bunker b: bunkers){
 				if (collisionDetector.detectBunkerCollision(b, (AlienProjectile) p)){
@@ -219,9 +240,14 @@ public class GameEngine {
 					p.takeDamage(1);
 					b.takeDamage(1);
 					if (!b.isAlive()){
+						bunkersRemoved += 1;
 						bunkers.remove(b);
+						for (Alien a: aliens){
+							a.increaseMoveSpeed();
+						}
 					}
 					System.out.printf("Bunker shot!%n");
+					alienProjectileCount -= 1;
 				}
 			}
 		}
@@ -232,20 +258,37 @@ public class GameEngine {
 					p.takeDamage(1);
 					a.takeDamage(1);
 					aliens.remove(a);
+					aliensKilled += 1;
 					System.out.printf("Alien killed!%n");
+				}
+			}
+		}
+		for (Alien a: aliens){
+			for (Bunker b: bunkers){
+				if (collisionDetector.detectAlienBunkerCollision(a, b)){
+					b.takeDamage(3);
+					bunkers.remove(b);
+					bunkersRemoved += 1;
+					System.out.printf("Bunker removed!%n");
 				}
 			}
 		}
 		alienProjectiles.removeAll(removedProjectiles);
 		shipProjectiles.removeAll(removedProjectiles);
+		gameobjects.removeAll(removedProjectiles);
 	}
 
 	public boolean isGameOver(){
-		if ((
-				bunkers.size() == 0) ||
-				(aliens.size() == 0) ||
-				(!player.isAlive()))
-		{
+		hasPlayerWon = false;
+		if ( bunkersRemoved == bunkerCount){
+			System.out.println("Bunkers removed");
+			return true;
+		} else if (aliensKilled == alienCount){
+			System.out.println("Aliens killed");
+			hasPlayerWon = true;
+			return true;
+		} else if (!player.isAlive()){
+			System.out.println("Player killed");
 			return true;
 		} else {
 			return false;
@@ -253,25 +296,7 @@ public class GameEngine {
 	}
 
 	public boolean hasPlayerWon(){
-		if (aliens.size() == 0){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public void removeAllObjects(){
-		bunkers.clear();
-		aliens.clear();
-		alienProjectiles.clear();
-		shipProjectiles.clear();
-		for (GameObject go: gameobjects){
-			if (go instanceof Damagable){
-				Damagable d = (Damagable) go;
-				d.takeDamage(10);
-			}
-		}
-		gameobjects.clear();
+		return hasPlayerWon;
 	}
 
 }

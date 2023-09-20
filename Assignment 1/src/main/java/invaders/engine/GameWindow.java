@@ -16,6 +16,9 @@ import javafx.scene.layout.Pane;
 
 import invaders.logic.Damagable;
 import invaders.entities.concrete.Player;
+import invaders.entities.concrete.GameOver;
+import invaders.entities.concrete.Success;
+import invaders.physics.Vector2D;
 
 public class GameWindow {
 	private final int width;
@@ -33,6 +36,13 @@ public class GameWindow {
 
     private long startTime;
 
+    private boolean gameStarted = false;
+
+    private GameOver gameover;
+    private Success success;
+
+    private boolean gameOverDisplayed = false;
+
     public GameWindow(GameEngine model, int width, int height){
 		this.width = width;
         this.height = height;
@@ -49,6 +59,14 @@ public class GameWindow {
         entityViews = new ArrayList<EntityView>();
 
         startTime = System.currentTimeMillis();
+
+        double displayX = this.width/2 - 50;
+        double displayY = this.height/2;
+
+        Vector2D displayPosition = new Vector2D(displayX, displayY);
+        success = new Success(displayPosition);
+        gameover = new GameOver(displayPosition);
+
     }
 
 	public void run() {
@@ -59,14 +77,28 @@ public class GameWindow {
     }
 
     private void draw(){
-        getElapsedTimeFormatted();
+        if (getElapsedTime() > 5 && gameStarted == false){
+            System.out.println("Game started!");
+            gameStarted = true;
+        }
+        if (gameStarted && model.isGameOver() && gameOverDisplayed == false) {
+            System.out.println("Game over!");
+            if (model.hasPlayerWon()) {
+                System.out.println("Player won!");
+                this.model.getRenderables().add(success);
+            } else {
+                System.out.println("Player lost");
+                this.model.getRenderables().add(gameover);
+            }
+            gameOverDisplayed = true;
+        }
         model.update();
         List<Renderable> markedForDelete = new ArrayList<Renderable>();
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {
-            if ((entity instanceof Damagable)){
+            if ((entity instanceof Damagable) && !(entity instanceof Player)) {
                 Damagable d = (Damagable) entity;
-                if (!d.isAlive()){
+                if (!d.isAlive()) {
                     markedForDelete.add(entity);
                 }
             }
@@ -86,8 +118,8 @@ public class GameWindow {
         }
 
         for (EntityView entityView : entityViews) {
-            for (Renderable r: markedForDelete){
-                if (entityView.matchesEntity(r)){
+            for (Renderable r : markedForDelete) {
+                if (entityView.matchesEntity(r)) {
                     entityView.markForDelete();
                 }
             }
@@ -96,6 +128,7 @@ public class GameWindow {
             }
         }
         entityViews.removeIf(EntityView::isMarkedForDelete);
+
     }
 
 	public Scene getScene() {
@@ -121,6 +154,16 @@ public class GameWindow {
         long elapsedSeconds = (elapsedTimeInMillis / 1000) % 60; // 1,000 milliseconds in a second
 
         System.out.printf("Elapsed Time: %d minutes %d seconds%n", elapsedMinutes, elapsedSeconds);
+    }
+
+    public long getElapsedTime(){
+        long currentTime = System.currentTimeMillis();
+        long elapsedTimeInMillis = currentTime - startTime;
+
+// Calculate elapsed minutes and seconds
+        long elapsedSeconds = (elapsedTimeInMillis / 1000) % 60; // 1,000 milliseconds in a second
+
+        return elapsedSeconds;
     }
 
 }

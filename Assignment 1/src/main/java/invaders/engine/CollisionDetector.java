@@ -87,5 +87,24 @@ public class CollisionDetector{
         return isColliding;
     }
 
+    public boolean detectAlienBunkerCollision(Alien alien, Bunker bunker){
+        double x1 = alien.getPosition().getX();
+        double y1 = alien.getPosition().getY();
+        double width1 = alien.getWidth();
+        double height1 = alien.getHeight();
+
+        double x2 = bunker.getPosition().getX();
+        double y2 = bunker.getPosition().getY();
+        double width2 = bunker.getWidth();
+        double height2 = bunker.getHeight();
+
+        boolean isColliding = isColliding(
+                x1, y1, width1, height1,
+                x2, y2, width2, height2
+        );
+
+        return isColliding;
+    }
+
 }
 

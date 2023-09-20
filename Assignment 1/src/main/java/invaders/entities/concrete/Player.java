@@ -55,7 +55,7 @@ public class Player implements Moveable, Damagable, Renderable, GameObject {
 
     @Override
     public boolean isAlive() {
-        return this.lives > 0;
+        return this.health > 0;
     }
 
     @Override

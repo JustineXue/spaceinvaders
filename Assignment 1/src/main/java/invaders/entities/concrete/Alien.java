@@ -33,8 +33,8 @@ public class Alien implements Moveable, Damagable, Renderable, GameObject {
     private final double height = 25;
     private final Image image;
 
-    private double xVel = 20;
-    private double yVel = 20;
+    private double xVel = 0.2;
+    private double yVel = 0.2;
 
     private double health = 1;
 
@@ -53,6 +53,8 @@ public class Alien implements Moveable, Damagable, Renderable, GameObject {
     private ProjectileStrategy strategy;
 
     private boolean shoot = false;
+
+    public int moveSpeed = 120;
 
     public Alien(){
         this.image = new Image(new File("src/main/resources/alien.png").toURI().toString(), width, height, true, true);
@@ -164,23 +166,23 @@ public class Alien implements Moveable, Damagable, Renderable, GameObject {
                 this.shoot();
             }
         }
-        if (moveCounter % 120 == 0){
-            if (this.moveCounter == 120){
+        if (moveCounter % moveSpeed == 0){
+            if ((int) this.moveCounter/moveSpeed == 1){
                 this.direction = direction.LEFT;
-            } else if (this.moveCounter == 240) {
+            } else if ((int) this.moveCounter/moveSpeed == 2) {
                 this.direction = direction.LEFT;
-            } else if (this.moveCounter == 360) {
+            } else if ((int) this.moveCounter/moveSpeed == 3) {
                 this.direction = direction.DOWN;
-            } else if (this.moveCounter == 480){
+            } else if ((int) this.moveCounter/moveSpeed == 4){
                 this.direction = direction.RIGHT;
-            } else if (this.moveCounter == 600){
+            } else if ((int) this.moveCounter/moveSpeed == 5){
                 this.direction = direction.RIGHT;
-            } else if (this.moveCounter == 720){
+            } else if ((int) this.moveCounter/moveSpeed == 6){
                 this.direction = direction.DOWN;
                 this.moveCounter = 0;
             }
-            this.move();
         }
+        this.move();
         this.moveCounter += 1;
     }
 
@@ -189,5 +191,10 @@ public class Alien implements Moveable, Damagable, Renderable, GameObject {
     public boolean getShoot(){ return this.shoot; }
 
     public void setShoot(){ this.shoot = false; }
+
+    public void increaseMoveSpeed(){
+        xVel += 0.1;
+        yVel += 0.1;
+    }
 
 }
