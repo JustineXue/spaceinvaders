@@ -89,9 +89,11 @@ public class Parser{
                 int bunkerSizeX = Math.toIntExact((Long) bunkerSize.get("x"));
                 int bunkerSizeY = Math.toIntExact((Long) bunkerSize.get("y"));
 
-                bunkers.add(bunkerBuilder.buildPart(
-                        bunkerSizeY, bunkerSizeX, new Vector2D(bunkerPosX, bunkerPosY), ""
-                ));
+                GameObjectBuilder bunkerBuilder = new BunkerBuilder();
+                bunkerBuilder.buildPosition(bunkerPosX, bunkerPosY);
+                bunkerBuilder.buildDimensions(bunkerSizeY, bunkerSizeX);
+                Bunker newBunker = (Bunker) bunkerBuilder.getProduct();
+                bunkers.add(newBunker);
 
                 System.out.println("Bunker Position X: " + bunkerPosX);
                 System.out.println("Bunker Position Y: " + bunkerPosY);
@@ -107,9 +109,11 @@ public class Parser{
                 int enemyPosY = Math.toIntExact((Long) enemyPosition.get("y"));
                 String enemyProjectile = (String) enemy.get("projectile");
 
-                aliens.add(alienBuilder.buildPart(
-                        0, 0, new Vector2D(enemyPosX, enemyPosY), enemyProjectile
-                ));
+                GameObjectBuilder alienBuilder = new AlienBuilder();
+                alienBuilder.buildPosition(enemyPosX, enemyPosY);
+                alienBuilder.buildStrategy(enemyProjectile);
+                Alien newAlien = (Alien) alienBuilder.getProduct();
+                aliens.add(newAlien);
 
                 System.out.println("Enemy Position X: " + enemyPosX);
                 System.out.println("Enemy Position Y: " + enemyPosY);

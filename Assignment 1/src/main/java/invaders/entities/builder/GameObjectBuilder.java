@@ -5,6 +5,13 @@ import invaders.physics.Vector2D;
 
 public interface GameObjectBuilder{
 
-    public GameObject buildPart(int height, int width, Vector2D position, String strategy);
+    public void buildPosition(int x, int y);
+
+    public void buildDimensions(int height, int width);
+
+
+    public void buildStrategy(String strategy);
+
+    public GameObject getProduct();
 
 }

@@ -128,7 +128,7 @@ public class GameEngine {
 	}
 
 	public boolean shootPressed(){
-//		player.shoot();
+		player.shoot();
 		return true;
 	}
 

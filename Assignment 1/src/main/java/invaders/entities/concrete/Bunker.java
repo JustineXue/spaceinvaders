@@ -16,22 +16,31 @@ import java.io.File;
 
 public class Bunker implements Renderable, Damagable, GameObject{
 
-    private final Vector2D position;
+    private Vector2D position;
     private final Animator anim = null;
 
     private double health = 3;
 
     private BunkerState state;
 
-    private final double width;
-    private final double height;
+    private double width;
+    private double height;
     private final Image image;
 
-    public Bunker(double height, double width, Vector2D position){
+    public Bunker(){
         this.state = new GreenBunker(height, width);
         this.image = this.state.getBunkerImage();
+    }
+
+    public void setPosition(Vector2D position){
         this.position = position;
+    }
+
+    public void setHeight(int height){
         this.height = height;
+    }
+
+    public void setWidth(int width){
         this.width = width;
     }
 

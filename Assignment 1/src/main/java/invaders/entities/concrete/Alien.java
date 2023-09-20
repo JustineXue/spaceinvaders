@@ -6,6 +6,8 @@ import invaders.rendering.Animator;
 import invaders.rendering.Renderable;
 import invaders.entities.GameObject;
 
+import invaders.entities.projectile.ProjectileStrategy;
+
 import javafx.scene.image.Image;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,12 +24,12 @@ enum Direction{
 
 public class Alien implements Moveable, Renderable, GameObject {
 
-    private final Vector2D position;
+    private Vector2D position;
     private final Animator anim = null;
     private boolean alive = true;
 
     private final double width = 25;
-    private final double height = 30;
+    private final double height = 25;
     private final Image image;
 
     private double xVel = 20;
@@ -45,9 +47,20 @@ public class Alien implements Moveable, Renderable, GameObject {
 
     private int randomInterval;
 
-    public Alien(Vector2D position, String strategy){
+    private ProjectileStrategy strategy;
+
+    private boolean shoot = false;
+
+    public Alien(){
         this.image = new Image(new File("src/main/resources/alien.png").toURI().toString(), width, height, true, true);
+    }
+
+    public void setPosition(Vector2D position){
         this.position = position;
+    }
+
+    public void setStrategy(ProjectileStrategy strategy){
+        this.strategy = strategy;
     }
 
     public void kill() {
@@ -79,6 +92,7 @@ public class Alien implements Moveable, Renderable, GameObject {
     }
 
     public void shoot(){
+        this.shoot = true;
         System.out.println("Alien Shoot!");
     }
 
@@ -160,5 +174,11 @@ public class Alien implements Moveable, Renderable, GameObject {
         }
         this.moveCounter += 1;
     }
+
+    public ProjectileStrategy getStrategy(){ return this.strategy; }
+
+    public boolean getShoot(){ return this.shoot; }
+
+    public void setShoot(){ this.shoot = false; }
 
 }
