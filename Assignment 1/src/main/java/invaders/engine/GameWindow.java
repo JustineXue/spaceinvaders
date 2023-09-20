@@ -30,7 +30,10 @@ public class GameWindow {
     private double yViewportOffset = 0.0;
     private static final double VIEWPORT_MARGIN = 280.0;
 
-	public GameWindow(GameEngine model, int width, int height){
+
+    private long startTime;
+
+    public GameWindow(GameEngine model, int width, int height){
 		this.width = width;
         this.height = height;
         this.model = model;
@@ -45,6 +48,7 @@ public class GameWindow {
 
         entityViews = new ArrayList<EntityView>();
 
+        startTime = System.currentTimeMillis();
     }
 
 	public void run() {
@@ -55,6 +59,7 @@ public class GameWindow {
     }
 
     private void draw(){
+        getElapsedTimeFormatted();
         model.update();
         List<Renderable> markedForDelete = new ArrayList<Renderable>();
         List<Renderable> renderables = model.getRenderables();
@@ -96,4 +101,26 @@ public class GameWindow {
 	public Scene getScene() {
         return scene;
     }
+
+    public void removeAllEntities(){
+        for (EntityView entityView : entityViews) {
+            entityView.markForDelete();
+            if (entityView.isMarkedForDelete()) {
+                pane.getChildren().remove(entityView.getNode());
+            }
+        }
+        entityViews.removeIf(EntityView::isMarkedForDelete);
+    }
+
+    public void getElapsedTimeFormatted(){
+        long currentTime = System.currentTimeMillis();
+        long elapsedTimeInMillis = currentTime - startTime;
+
+// Calculate elapsed minutes and seconds
+        long elapsedMinutes = elapsedTimeInMillis / (60 * 1000); // 60,000 milliseconds in a minute
+        long elapsedSeconds = (elapsedTimeInMillis / 1000) % 60; // 1,000 milliseconds in a second
+
+        System.out.printf("Elapsed Time: %d minutes %d seconds%n", elapsedMinutes, elapsedSeconds);
+    }
+
 }
