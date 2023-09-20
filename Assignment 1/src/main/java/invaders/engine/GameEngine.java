@@ -97,6 +97,7 @@ public class GameEngine {
 	 */
 	public void update(){
 		movePlayer();
+		List<Projectile> tempProjectiles = new ArrayList<Projectile>();
 		for(GameObject go: gameobjects){
 			if (go instanceof Alien){
 				Alien alien = (Alien) go;
@@ -104,16 +105,14 @@ public class GameEngine {
 					alien.setShoot();
 					Projectile newProjectile = alienProjectileCreator.createProjectile(go);
 					alienProjectiles.add(newProjectile);
-					gameobjects.add(newProjectile);
-					renderables.add(newProjectile);
+					tempProjectiles.add(newProjectile);
 				}
 			} else if (go instanceof Player){
 				if (player.getShoot()){
 					player.setShoot();
 					Projectile newProjectile = shipProjectileCreator.createProjectile(go);
 					shipProjectiles.add(newProjectile);
-					gameobjects.add(newProjectile);
-					renderables.add(newProjectile);
+					tempProjectiles.add(newProjectile);
 				}
 			}
 			go.update();
@@ -142,6 +141,9 @@ public class GameEngine {
 				}
 			}
 		}
+
+		gameobjects.addAll(tempProjectiles);
+		renderables.addAll(tempProjectiles);
 	}
 
 	public List<Renderable> getRenderables(){
