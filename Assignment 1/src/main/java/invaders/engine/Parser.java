@@ -37,10 +37,6 @@ public class Parser{
 
     private List<GameObject> aliens = new ArrayList<GameObject>();
 
-    private GameObjectBuilder bunkerBuilder = new BunkerBuilder();
-
-    private GameObjectBuilder alienBuilder = new AlienBuilder();
-
     public Parser(String config){
         this.config = config;
     }
@@ -102,7 +98,6 @@ public class Parser{
                 Alien newAlien = (Alien) alienBuilder.getProduct();
                 aliens.add(newAlien);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException | ParseException e) {

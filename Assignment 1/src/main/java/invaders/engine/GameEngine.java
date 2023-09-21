@@ -16,10 +16,8 @@ import invaders.entities.projectile.Projectile;
 import invaders.entities.projectile.ProjectileCreator;
 import invaders.entities.projectile.AlienProjectileCreator;
 import invaders.entities.projectile.ShipProjectileCreator;
-import invaders.engine.CollisionDetector;
+import invaders.physics.CollisionDetector;
 import invaders.logic.Damagable;
-import invaders.entities.concrete.Success;
-import invaders.entities.concrete.GameOver;
 /**
  * This class manages the main loop and logic of the game
  */
@@ -96,7 +94,8 @@ public class GameEngine {
 		gameobjects.addAll(bunkers);
 		for (GameObject go: tempAliens){
 			if (go instanceof Alien) {
-				aliens.add((Alien) go);
+				Alien a = (Alien) go;
+				aliens.add(a);
 			}
 		}
 		renderables.addAll(aliens);
@@ -165,7 +164,7 @@ public class GameEngine {
 				}
 			}
 		}
-//		gameobjects.removeAll(removeProjectiles);
+		gameobjects.removeAll(removeProjectiles);
 		renderables.removeAll(removeProjectiles);
 		alienProjectiles.remove(removeProjectiles);
 		gameobjects.addAll(tempProjectiles);
@@ -271,13 +270,11 @@ public class GameEngine {
 		shipProjectiles.removeAll(removedProjectiles);
 		gameobjects.removeAll(removedProjectiles);
 
-		double tempAliensKilled = 0;
 		for (Alien a: removedAliens){
 			if (aliens.remove(a)){
-				tempAliensKilled += 0.5;
+				aliensKilled += 1;
 			}
 		}
-		aliensKilled += (int) tempAliensKilled;
 		gameobjects.removeAll(removedAliens);
 		bunkers.removeAll(removedBunkers);
 		gameobjects.removeAll(removedBunkers);

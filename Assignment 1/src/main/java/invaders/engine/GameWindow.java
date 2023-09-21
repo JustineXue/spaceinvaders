@@ -16,8 +16,6 @@ import javafx.scene.layout.Pane;
 
 import invaders.logic.Damagable;
 import invaders.entities.concrete.Player;
-import invaders.entities.concrete.GameOver;
-import invaders.entities.concrete.Success;
 import invaders.physics.Vector2D;
 import invaders.entities.GameObject;
 
@@ -42,9 +40,6 @@ public class GameWindow {
     private long startTime;
 
     private boolean gameStarted = false;
-
-    private GameOver gameover;
-    private Success success;
 
     private boolean gameOverDisplayed = false;
     private String scoreString;
